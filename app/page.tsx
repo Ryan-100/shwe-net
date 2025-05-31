@@ -1,10 +1,5 @@
-import SplashUI from '@/components/pages/splash'
-import React from 'react'
+import Splash from "@/components/pages/splash";
 
-const Splash = () => {
-  return (
-    <SplashUI/>
-  )
+export default function SplashPage() {
+  return <Splash />;
 }
-
-export default Splash
