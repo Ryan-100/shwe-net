@@ -2,7 +2,7 @@ import Home from '@/components/pages/home'
 import ChatBot from '@/components/shared/ChatBot'
 import React from 'react'
 
-const Dashboard = () => {
+export default function Dashboard() {
   return (
     <div>
       <Home/>
@@ -10,5 +10,3 @@ const Dashboard = () => {
     </div>
   )
 }
-
-export default Dashboard
