@@ -39,7 +39,7 @@ export default function SplashUI() {
 
       {/* Loading State */}
       {isLoading && (
-        <Loading text={"Loading ShweNet..."} />
+        <Loading text={"Loading Revionix..."} />
       )}
 
       {/* Main Content */}

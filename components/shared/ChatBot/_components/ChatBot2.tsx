@@ -31,7 +31,7 @@ const ChatHistory2: React.FC<ChatHistory2Props> = ({
     {
       id: 1,
       type: 'bot',
-      content: "Welcome to ShweNet! ✨ I'm your AI Financial Advisor, ready to unlock insights from your golden network of financial data. Ask me about cash flow, expenses, trends, or any financial analysis you need.",
+      content: "Welcome to Revionix! ✨ I'm your AI Financial Advisor, ready to unlock insights from your golden network of financial data. Ask me about cash flow, expenses, trends, or any financial analysis you need.",
       timestamp: new Date(),
       isAnimating: true
     }
@@ -155,7 +155,7 @@ const ChatHistory2: React.FC<ChatHistory2Props> = ({
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full"></div>
           </div>
           <div>
-            <h3 className="font-bold text-xl text-white drop-shadow-md">ShweNet AI Advisor</h3>
+            <h3 className="font-bold text-xl text-white drop-shadow-md">Revionix AI Advisor</h3>
             <p className="text-white/90 text-sm font-medium">Your Golden Network for Smarter Finance</p>
           </div>
         </div>

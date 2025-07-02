@@ -132,10 +132,10 @@ export const EditScanResultModal = ({ result, isOpen, onClose, onSave }: EditSca
       };
     } else {
       updatedResult = {
-        ...result,
+      ...result,
         processed_data: {
           ...result.processed_data,
-          ...values,
+      ...values,
           receipt_items: values.receipt_items || result.processed_data.receipt_items,
         },
         classified_data: {
@@ -173,19 +173,19 @@ export const EditScanResultModal = ({ result, isOpen, onClose, onSave }: EditSca
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
+            <FormField
+              control={form.control}
                   name="invoice_number"
-                  render={({ field }) => (
-                    <FormItem>
+              render={({ field }) => (
+                <FormItem>
                       <FormLabel>Invoice Number</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
                 <FormField
                   control={form.control}
                   name="invoice_date"
@@ -254,13 +254,13 @@ export const EditScanResultModal = ({ result, isOpen, onClose, onSave }: EditSca
               </>
             ) : (
               <>
-                <FormField
-                  control={form.control}
+            <FormField
+              control={form.control}
                   name="vendor_name"
-                  render={({ field }) => (
-                    <FormItem>
+              render={({ field }) => (
+                <FormItem>
                       <FormLabel>Vendor Name</FormLabel>
-                      <FormControl>
+                  <FormControl>
                         <Input {...field} />
                       </FormControl>
                       <FormMessage />
@@ -275,24 +275,24 @@ export const EditScanResultModal = ({ result, isOpen, onClose, onSave }: EditSca
                       <FormLabel>Receipt ID</FormLabel>
                       <FormControl>
                         <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
                   name="purchase_date"
-                  render={({ field }) => (
-                    <FormItem>
+              render={({ field }) => (
+                <FormItem>
                       <FormLabel>Purchase Date</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
                 <FormField
                   control={form.control}
                   name="subtotal"
@@ -319,19 +319,19 @@ export const EditScanResultModal = ({ result, isOpen, onClose, onSave }: EditSca
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
+            <FormField
+              control={form.control}
                   name="total"
-                  render={({ field }) => (
-                    <FormItem>
+              render={({ field }) => (
+                <FormItem>
                       <FormLabel>Total</FormLabel>
-                      <FormControl>
+                    <FormControl>
                         <Input type="number" step="0.01" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
               </>
             )}
             {/* Items array */}

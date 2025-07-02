@@ -19,7 +19,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ onAnalyze = null, className =
     {
       id: 1,
       type: 'bot',
-      content: "Hello! I'm your ShweNet AI Financial Advisor. I can help analyze your finances, explain cash flow patterns, and provide strategic insights. What would you like to know about your business?",
+      content: "Hello! I'm your Revionix AI Financial Advisor. I can help analyze your finances, explain cash flow patterns, and provide strategic insights. What would you like to know about your business?",
       timestamp: new Date()
     }
   ]);
@@ -120,7 +120,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ onAnalyze = null, className =
           <Bot size={16} className="text-white" />
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900">ShweNet AI Advisor</h3>
+          <h3 className="font-semibold text-gray-900">Revionix AI Advisor</h3>
           <p className="text-xs text-gray-600">Your Golden Network for Smarter Finance</p>
         </div>
       </div>

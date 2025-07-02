@@ -1,12 +1,26 @@
 import { Camera } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import React from "react"
 
 interface CameraCaptureCardProps {
-  onCapture: () => void
+  onCapture: (file: File) => void
 }
 
 export const CameraCaptureCard = ({ onCapture }: CameraCaptureCardProps) => {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files[0]) {
+      onCapture(files[0]);
+    }
+  };
+
   return (
     <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 bg-white/80 backdrop-blur-sm border-0 shadow-xl overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -22,9 +36,17 @@ export const CameraCaptureCard = ({ onCapture }: CameraCaptureCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="relative z-10">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
         <Button 
           className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
-          onClick={onCapture}
+          onClick={handleButtonClick}
         >
           <Camera className="h-5 w-5 mr-3" />
           Launch Camera
