@@ -5,9 +5,10 @@ import { useRef } from "react"
 
 interface FileUploadCardProps {
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
+  fileUploaded?: boolean
 }
 
-export const FileUploadCard = ({ onFileUpload }: FileUploadCardProps) => {
+export const FileUploadCard = ({ onFileUpload, fileUploaded = false }: FileUploadCardProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -29,10 +30,13 @@ export const FileUploadCard = ({ onFileUpload }: FileUploadCardProps) => {
           type="file"
           ref={fileInputRef}
           onChange={onFileUpload}
-          accept="image/*,.pdf"
-          multiple
+          accept="image/*,application/pdf"
+          disabled={fileUploaded}
           className="hidden"
         />
+        {fileUploaded && (
+          <p className="text-amber-600 font-semibold">Only one file can be uploaded at a time.</p>
+        )}
         <Button 
           className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
           onClick={() => fileInputRef.current?.click()}
