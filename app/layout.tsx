@@ -4,8 +4,8 @@ import { Suspense } from 'react'
 import Provider from './Provider'
 
 export const metadata: Metadata = {
-  title: 'ShweNet',
-  description: 'ShweNet',
+  title: 'Revionix',
+  description: 'Revionix',
   generator: 'Kyaw Zin Htet',
 }
 

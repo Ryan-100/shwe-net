@@ -8,12 +8,10 @@ import { ProcessingState } from "./_components/ProcessingState"
 import { UploadedFilesPreview } from "./_components/UploadedFilesPreview"
 import { ScanResults } from "./_components/ScanResults"
 import toast from "react-hot-toast"
-import { useRouter } from "next/navigation"
 import { useDocumentVerification } from "@/features/base/services/mutation"
 import { InvoiceResponse, ReceiptResponse } from "@/features/base/types"
 
 const Scan = () => {
-  const router = useRouter();
   const [isScanning, setIsScanning] = useState<boolean>(false)
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [processingProgress, setProcessingProgress] = useState<number>(0)
@@ -29,6 +27,16 @@ const Scan = () => {
     "Validating information...",
     "Finalizing results..."
   ]
+
+  const friendlyMessages = [
+    "Almost there...",
+    "Hang on, we're extracting your data...",
+    "Just a moment, finalizing...",
+    "AI is working its magic...",
+    "Crunching the numbers...",
+    "Verifying your document..."
+  ];
+  const [friendlyMessage, setFriendlyMessage] = useState(friendlyMessages[0]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -48,12 +56,31 @@ const Scan = () => {
     setIsScanning(true);
     setProcessingProgress(0);
     setProcessingStage("Uploading and verifying...");
+    setFriendlyMessage(friendlyMessages[0]);
+
+    // Animate progress up to 99% while waiting for API
+    let progress = 0;
+    let messageIndex = 0;
+    const progressInterval = setInterval(() => {
+      if (progress < 99) {
+        progress = Math.min(progress + Math.random() * 10 + 5, 99);
+        setProcessingProgress(progress);
+      } else {
+        // Rotate friendly messages every 2.5 seconds
+        messageIndex = (messageIndex + 1) % friendlyMessages.length;
+        setFriendlyMessage(friendlyMessages[messageIndex]);
+      }
+    }, 2000);
+
     try {
       const response = await verifyDocument({ file: files[0] });
+      clearInterval(progressInterval);
+      setProcessingProgress(100);
       if (response) setScanResult(response as InvoiceResponse | ReceiptResponse);
       setIsScanning(false);
       setProcessingStage("Complete!");
     } catch (error) {
+      clearInterval(progressInterval);
       setIsScanning(false);
       setProcessingStage("Error during verification");
       // Optionally show error toast
@@ -62,6 +89,7 @@ const Scan = () => {
 
   const removeFile = (index: number) => {
     setUploadedFiles((files) => files.filter((_, i) => i !== index))
+    setScanResult(null);
   }
 
   const confirmResults = () => {
@@ -71,7 +99,7 @@ const Scan = () => {
     setProcessingProgress(0)
     setProcessingStage("Initializing...")
     
-    toast.success("✨ Documents saved successfully and explore your ShweNet analysis.", {
+    toast.success("✨ Documents saved successfully and explore your Revionix analysis.", {
       duration: 4000,
       position: "top-center",
       style: {
@@ -111,13 +139,15 @@ const Scan = () => {
 
         {!isScanning && !scanResult && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            <CameraCaptureCard onCapture={handleCameraCapture} />
+            <CameraCaptureCard onCapture={(file: File) => {
+              setUploadedFiles([file]);
+            }} />
             <FileUploadCard onFileUpload={handleFileUpload} fileUploaded={uploadedFiles.length > 0} />
           </div>
         )}
 
         {isScanning && (
-          <ProcessingState progress={processingProgress} stage={processingStage} />
+          <ProcessingState progress={processingProgress} stage={processingStage} friendlyMessage={processingProgress >= 99 ? friendlyMessage : undefined} />
         )}
 
         {uploadedFiles.length > 0 && !isScanning && (

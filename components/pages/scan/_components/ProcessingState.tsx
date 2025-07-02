@@ -5,9 +5,10 @@ import { Progress } from "@/components/ui/progress"
 interface ProcessingStateProps {
   progress: number
   stage: string
+  friendlyMessage?: string
 }
 
-export const ProcessingState = ({ progress, stage }: ProcessingStateProps) => {
+export const ProcessingState = ({ progress, stage, friendlyMessage }: ProcessingStateProps) => {
   return (
     <Card className="mb-12 bg-white/90 backdrop-blur-sm border-0 shadow-2xl overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 via-yellow-500/20 to-orange-500/20 animate-pulse"></div>
@@ -31,6 +32,11 @@ export const ProcessingState = ({ progress, stage }: ProcessingStateProps) => {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full opacity-20 animate-pulse"></div>
           </div>
+          {friendlyMessage && (
+            <div className="text-center text-amber-700 text-lg font-semibold animate-pulse">
+              {friendlyMessage}
+            </div>
+          )}
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <Eye className="h-5 w-5 text-amber-600 animate-pulse" />

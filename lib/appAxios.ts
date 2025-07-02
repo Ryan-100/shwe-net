@@ -3,7 +3,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import { API_URL, PRIVATE_TOKEN } from "./api";
+import { API_URL, HF_TOKEN } from "./api";
 
 const appAxios = axios.create({
   baseURL: `${API_URL}`,
@@ -16,7 +16,8 @@ const appAxios = axios.create({
 appAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (config.headers) {
-      if (PRIVATE_TOKEN) config.headers.Authorization = PRIVATE_TOKEN ?`Bearer ${PRIVATE_TOKEN}`: "";
+      const token = HF_TOKEN;
+      if (token) config.headers.Authorization = token ?`Bearer ${token}`: "";
     }
     return config;
   },
