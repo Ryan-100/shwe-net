@@ -16,7 +16,7 @@ const appAxios = axios.create({
 appAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (config.headers) {
-      const token = HF_TOKEN;
+      const token = "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";
       if (token) config.headers.Authorization = token ?`Bearer ${token}`: "";
     }
     return config;
