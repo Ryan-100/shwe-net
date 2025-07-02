@@ -9,25 +9,17 @@ import { UploadedFilesPreview } from "./_components/UploadedFilesPreview"
 import { ScanResults } from "./_components/ScanResults"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
-
-interface ScanResult {
-  id: number
-  filename: string
-  vendor: string
-  amount: number
-  date: string
-  category: string
-  confidence: number
-  status: string
-}
+import { useDocumentVerification } from "@/features/base/services/mutation"
+import { InvoiceResponse, ReceiptResponse } from "@/features/base/types"
 
 const Scan = () => {
   const router = useRouter();
   const [isScanning, setIsScanning] = useState<boolean>(false)
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [processingProgress, setProcessingProgress] = useState<number>(0)
-  const [scanResults, setScanResults] = useState<ScanResult[]>([])
+  const [scanResult, setScanResult] = useState<InvoiceResponse | ReceiptResponse | null>(null)
   const [processingStage, setProcessingStage] = useState<string>("Initializing...")
+  const { mutateAsync: verifyDocument } = useDocumentVerification();
 
   const processingStages = [
     "Initializing AI engine...",
@@ -39,59 +31,34 @@ const Scan = () => {
   ]
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || [])
-    setUploadedFiles(files)
-    startProcessing(files)
+    const files = Array.from(event.target.files || []);
+    if (files.length > 0) {
+      setUploadedFiles([files[0]]); // Only allow one file
+      // Do NOT call startProcessing here
+    }
   }
 
   const handleCameraCapture = () => {
     setIsScanning(true)
     setProcessingProgress(0)
-    simulateProcessing([{ name: "camera_capture.jpg" } as File])
+    startProcessing([{ name: "camera_capture.jpg" } as File])
   }
 
-  const startProcessing = (files: File[]) => {
-    setIsScanning(true)
-    setProcessingProgress(0)
-    simulateProcessing(files)
-  }
-
-  const simulateProcessing = (files: File[]) => {
-    let currentStage = 0
-    const interval = setInterval(() => {
-      setProcessingProgress((prev) => {
-        const newProgress = prev + (Math.random() * 8 + 12)
-        
-        // Update processing stage
-        const stageIndex = Math.floor((newProgress / 100) * processingStages.length)
-        if (stageIndex < processingStages.length) {
-          setProcessingStage(processingStages[stageIndex])
-        }
-
-        if (newProgress >= 100) {
-          clearInterval(interval)
-          setIsScanning(false)
-          setProcessingStage("Complete!")
-          
-          // Mock scan results with enhanced data
-          const mockResults: ScanResult[] = files.map((file, index) => ({
-            id: index + 1,
-            filename: file.name || `document_${index + 1}.jpg`,
-            vendor: index === 0 ? "Golden Tech Solutions Inc." : "Premium Office Supplies Co.",
-            amount: index === 0 ? 1250.0 : 245.67,
-            date: "2024-01-15",
-            category: index === 0 ? "Software & Technology" : "Office Supplies",
-            confidence: Math.floor(Math.random() * 15 + 85),
-            status: "extracted",
-          }))
-          
-          setScanResults(mockResults)
-          return 100
-        }
-        return newProgress
-      })
-    }, 150)
-  }
+  const startProcessing = async (files: File[]) => {
+    setIsScanning(true);
+    setProcessingProgress(0);
+    setProcessingStage("Uploading and verifying...");
+    try {
+      const response = await verifyDocument({ file: files[0] });
+      if (response) setScanResult(response as InvoiceResponse | ReceiptResponse);
+      setIsScanning(false);
+      setProcessingStage("Complete!");
+    } catch (error) {
+      setIsScanning(false);
+      setProcessingStage("Error during verification");
+      // Optionally show error toast
+    }
+  };
 
   const removeFile = (index: number) => {
     setUploadedFiles((files) => files.filter((_, i) => i !== index))
@@ -100,7 +67,7 @@ const Scan = () => {
   const confirmResults = () => {
     // Enhanced success feedback
     setUploadedFiles([])
-    setScanResults([])
+    setScanResult(null)
     setProcessingProgress(0)
     setProcessingStage("Initializing...")
     
@@ -114,11 +81,10 @@ const Scan = () => {
         borderRadius: "8px",
       },
     })
-    router.push('/dashboard')
   }
 
-  const handleEditResults = (updatedResults: ScanResult[]) => {
-    setScanResults(updatedResults)
+  const handleEditResults = (updatedResult: InvoiceResponse | ReceiptResponse) => {
+    setScanResult(updatedResult);
     toast.success("Document details updated successfully!", {
       duration: 3000,
       position: "top-center",
@@ -128,7 +94,7 @@ const Scan = () => {
         padding: "16px",
         borderRadius: "8px",
       },
-    })
+    });
   }
 
   return (
@@ -143,10 +109,10 @@ const Scan = () => {
       <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Header />
 
-        {!isScanning && scanResults.length === 0 && (
+        {!isScanning && !scanResult && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             <CameraCaptureCard onCapture={handleCameraCapture} />
-            <FileUploadCard onFileUpload={handleFileUpload} />
+            <FileUploadCard onFileUpload={handleFileUpload} fileUploaded={uploadedFiles.length > 0} />
           </div>
         )}
 
@@ -162,9 +128,9 @@ const Scan = () => {
           />
         )}
 
-        {scanResults.length > 0 && (
+        {scanResult && (
           <ScanResults 
-            results={scanResults}
+            result={scanResult}
             onConfirm={confirmResults}
             onEdit={handleEditResults}
           />
